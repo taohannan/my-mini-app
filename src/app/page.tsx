@@ -1,9 +1,9 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 
-export default function Home() {
+function TokenViewer() {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   const [decoded, setDecoded] = useState<Record<string, any> | null>(null)
@@ -22,12 +22,12 @@ export default function Home() {
   }, [token])
 
   return (
-    <main style={{ padding: '2rem' }}>
-      <h1>🎉 Mini App (Next.js)</h1>
+    <>
+      <h2>🎉 Mini App (Next.js)</h2>
       {token ? (
         <>
           <p><strong>Raw Token:</strong> {token}</p>
-          <h2>🔍 Decoded Token Payload</h2>
+          <h3>🔍 Decoded Token Payload</h3>
           <ul>
             {decoded &&
               Object.entries(decoded).map(([key, value]) => (
@@ -38,6 +38,16 @@ export default function Home() {
       ) : (
         <p>Waiting for token...</p>
       )}
+    </>
+  )
+}
+
+export default function Home() {
+  return (
+    <main style={{ padding: '2rem' }}>
+      <Suspense fallback={<p>Loading...</p>}>
+        <TokenViewer />
+      </Suspense>
     </main>
   )
 }
